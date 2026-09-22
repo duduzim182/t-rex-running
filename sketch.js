@@ -1,5 +1,6 @@
 let trex;
 let trexRunning;
+let trexCollided;
 let ground;
 let groundImage;
 let invisibleGround;
@@ -12,9 +13,14 @@ let score = 0;
 const PLAY = 1;
 const END = 0;
 let gameState = PLAY;
+let gameOver;
+let gameOverImg;
+let restart;
+let restartImg
 
 function preload() {
     trexRunning = loadAnimation("trex1.png", "trex2.png", "trex3.png");
+    trexCollided = loadAnimation("trex_collided.png");
     groundImage = loadImage("ground2.png");
     cloudImg = loadImage("cloud.png");
     obstacle1 = loadImage("obstacle1.png");
@@ -23,6 +29,8 @@ function preload() {
     obstacle4 = loadImage("obstacle4.png");
     obstacle5 = loadImage("obstacle5.png");
     obstacle6 = loadImage("obstacle6.png");
+    gameOverImg = loadImage("gameOver.png")
+    restartImg =  loadImage("restart.png")
 
 }
 
@@ -31,6 +39,7 @@ function setup() {
 
     trex = createSprite(50, 160, 20, 50);
     trex.addAnimation("running", trexRunning);
+    trex.addAnimation("collided",trexCollided)
     trex.scale = 0.5;
     trex.x = 50;
 
@@ -42,6 +51,9 @@ function setup() {
 
     obstaclesGroup = new Group();
     cloudsGroup = new Group();
+
+    trex.setCollider("circle",0,0,40)
+    trex.debug = true;
 }
 
 function draw() {
@@ -68,8 +80,12 @@ function draw() {
     }
     else if(gameState === END){
         ground.velocityX = 0;
+        trex.changeAnimation("collided",trexCollided)
         obstaclesGroup.setVelocityXEach(0);
         cloudsGroup.setVelocityXEach(0);
+        obstaclesGroup.setLifetimeEach(-1);
+        cloudsGroup.setLifetimeEach(-1);
+        trex.velocityY = 0
 
     }
 
